@@ -38,7 +38,7 @@ def InstantiateProceedButton():
     global compileButton
 
     # button
-    compileButton = tk.Button(frame1, text='PROCEED', font=("Arial", 12), command = ExecutableManager.StartInsertToDataBase, width=15, height=1)
+    compileButton = tk.Button(frame1, text='PROCEED', font=("Arial", 12), command = ExecutableManager.StartProgram, width=15, height=1)
     compileButton.grid(column=0, row=1, ipadx=5, ipady=5, pady=10)
     compileButton.config(bg="lightgreen", fg="black")
 

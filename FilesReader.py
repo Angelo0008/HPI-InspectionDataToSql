@@ -771,7 +771,7 @@ class filesReader():
             except:
                 pass
 
-            if self.readingYear > 2021:
+            if self.readingYear > 2024:
                 self.readingYear -= 1
             else:
                 # self.fileFinishedReading = True
@@ -988,16 +988,16 @@ class filesReader():
                 break
 
     def ReadAllFiles(self):
-        self.ReadEm2pFiles()
-        self.ReadEm3pFiles()
-        self.ReadFmFiles()
-        self.ReadDfbSnapFiles()
-        self.ReadDfbFiles()
-        self.ReadTensile()
+        # self.ReadEm2pFiles()
+        # self.ReadEm3pFiles()
+        # self.ReadFmFiles()
+        # self.ReadDfbSnapFiles()
+        # self.ReadDfbFiles()
+        # self.ReadTensile()
         self.ReadRdbCheckSheetFiles()
-        self.ReadRdbFiles()
-        self.ReadCsbFiles()
-        self.ReadHPIQAQCFiles()
+        # self.ReadRdbFiles()
+        # self.ReadCsbFiles()
+        # self.ReadHPIQAQCFiles()
 
 #%%
 # filesreader = filesReader()

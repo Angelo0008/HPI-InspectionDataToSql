@@ -57,6 +57,159 @@ def CreateEM0580106PInspection():
         )
     """)
 
+def CreateEM0580107PInspection():
+    global create_cursor
+
+    create_cursor.execute("""
+        CREATE TABLE EM0580107P_Inspection(
+            ID VARCHAR(64) PRIMARY KEY,
+            Lot_Number VARCHAR(64),
+            Date VARCHAR(64),
+            Inspection_3_Resistance_Minimum VARCHAR(64),
+            Inspection_3_Resistance_Average VARCHAR(64),
+            Inspection_3_Resistance_Maximum VARCHAR(64),
+            Inspection_4_Dimension_Minimum VARCHAR(64),
+            Inspection_4_Dimension_Average VARCHAR(64),
+            Inspection_4_Dimension_Maximum VARCHAR(64),
+            Inspection_5_Dimension_Minimum VARCHAR(64),
+            Inspection_5_Dimension_Average VARCHAR(64),
+            Inspection_5_Dimension_Maximum VARCHAR(64),
+            Inspection_10_Pull_Test VARCHAR(64)
+        )
+    """)
+
+def CreateEM0660046PInspection():
+    global create_cursor
+
+    create_cursor.execute("""
+        CREATE TABLE EM0660046P_Inspection(
+            ID VARCHAR(64) PRIMARY KEY,
+            Lot_Number VARCHAR(64),
+            Date VARCHAR(64),
+            Inspection_3_Resistance_Minimum VARCHAR(64),
+            Inspection_3_Resistance_Average VARCHAR(64),
+            Inspection_3_Resistance_Maximum VARCHAR(64),
+            Inspection_10_Pull_Test VARCHAR(64)
+        )
+    """)
+
+def CreateFM05000102Inspection():
+    global create_cursor
+
+    create_cursor.execute("""
+        CREATE TABLE FM05000102_Inspection(
+            ID VARCHAR(64) PRIMARY KEY,
+            Lot_Number VARCHAR(64),
+            Date VARCHAR(64),
+                          
+            Inspection_1_Minimum VARCHAR(64),
+            Inspection_1_Average VARCHAR(64),
+            Inspection_1_Maximum VARCHAR(64),
+                          
+            Inspection_2_Minimum VARCHAR(64),
+            Inspection_2_Average VARCHAR(64),
+            Inspection_2_Maximum VARCHAR(64),
+                          
+            Inspection_3_Minimum VARCHAR(64),
+            Inspection_3_Average VARCHAR(64),
+            Inspection_3_Maximum VARCHAR(64),
+                          
+            Inspection_4_Minimum VARCHAR(64),
+            Inspection_4_Average VARCHAR(64),
+            Inspection_4_Maximum VARCHAR(64),
+                          
+            Inspection_5_Minimum VARCHAR(64),
+            Inspection_5_Average VARCHAR(64),
+            Inspection_5_Maximum VARCHAR(64),
+                          
+            Inspection_6_Minimum VARCHAR(64),
+            Inspection_6_Average VARCHAR(64),
+            Inspection_6_Maximum VARCHAR(64),
+                          
+            Inspection_7_Minimum VARCHAR(64),
+            Inspection_7_Average VARCHAR(64),
+            Inspection_7_Maximum VARCHAR(64)
+        )
+    """)
+
+def CreateCSB6400802Inspection():
+    global create_cursor
+
+    create_cursor.execute("""
+        CREATE TABLE CSB6400802_Inspection(
+            ID VARCHAR(64) PRIMARY KEY,
+            Lot_Number VARCHAR(64),
+            Date VARCHAR(64),
+            Inspection_1_Minimum VARCHAR(64),
+            Inspection_1_Average VARCHAR(64),
+            Inspection_1_Maximum VARCHAR(64)
+        )
+    """)
+
+def CreateDF06600600Inspection():
+    global create_cursor
+
+    create_cursor.execute("""
+        CREATE TABLE DF06600600_Inspection(
+            ID VARCHAR(64) PRIMARY KEY,
+            Lot_Number VARCHAR(64),
+            Date VARCHAR(64),
+            Inspection_1_Minimum VARCHAR(64),
+            Inspection_1_Average VARCHAR(64),
+            Inspection_1_Maximum VARCHAR(64),
+                          
+            Inspection_2_Minimum VARCHAR(64),
+            Inspection_2_Average VARCHAR(64),
+            Inspection_2_Maximum VARCHAR(64),
+                          
+            Inspection_3_Minimum VARCHAR(64),
+            Inspection_3_Average VARCHAR(64),
+            Inspection_3_Maximum VARCHAR(64),
+                          
+            Inspection_4_Minimum VARCHAR(64),
+            Inspection_4_Average VARCHAR(64),
+            Inspection_4_Maximum VARCHAR(64),
+                          
+            Inspection_6_Hardness_Test VARCHAR(64)
+        )
+    """)
+
+def CreateRD05200200Inspection():
+    global create_cursor
+
+    create_cursor.execute("""
+        CREATE TABLE RD05200200_Inspection(
+            ID VARCHAR(64) PRIMARY KEY,
+            Lot_Number VARCHAR(64),
+            Date VARCHAR(64),
+            Inspection_1_Minimum VARCHAR(64),
+            Inspection_1_Average VARCHAR(64),
+            Inspection_1_Maximum VARCHAR(64),
+                          
+            Inspection_2_Minimum VARCHAR(64),
+            Inspection_2_Average VARCHAR(64),
+            Inspection_2_Maximum VARCHAR(64),
+                          
+            Inspection_3_Minimum VARCHAR(64),
+            Inspection_3_Average VARCHAR(64),
+            Inspection_3_Maximum VARCHAR(64),
+                          
+            Inspection_4_Minimum VARCHAR(64),
+            Inspection_4_Average VARCHAR(64),
+            Inspection_4_Maximum VARCHAR(64),
+                          
+            Inspection_5_Minimum VARCHAR(64),
+            Inspection_5_Average VARCHAR(64),
+            Inspection_5_Maximum VARCHAR(64),
+                          
+            Inspection_6_Minimum VARCHAR(64),
+            Inspection_6_Average VARCHAR(64),
+            Inspection_6_Maximum VARCHAR(64),
+                          
+            Inspection_8_Breaking_Test VARCHAR(64)
+        )
+    """)
+
 def CreateProcess1Table():
     global create_cursor
 
@@ -1431,6 +1584,370 @@ def InsertDataToEM0580106PInspectionTable(df):
         ) VALUES (
         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
         %s, %s, %s)
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+
+def InsertDataToEM0580107PInspectionTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM em0580107P_inspection")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO em0580107P_inspection (
+            ID,
+            Lot_Number,
+            Date,
+            Inspection_3_Resistance_Minimum,
+            Inspection_3_Resistance_Average,
+            Inspection_3_Resistance_Maximum,
+            Inspection_4_Dimension_Minimum,
+            Inspection_4_Dimension_Average,
+            Inspection_4_Dimension_Maximum,
+            Inspection_5_Dimension_Minimum,
+            Inspection_5_Dimension_Average,
+            Inspection_5_Dimension_Maximum,
+            Inspection_10_Pull_Test
+        ) VALUES (
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s, %s)
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+def InsertDataToEM0660046PInspectionTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM em0660046p_inspection")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO em0660046p_inspection (
+            ID,
+            Lot_Number,
+            Date,
+            Inspection_3_Resistance_Minimum,
+            Inspection_3_Resistance_Average,
+            Inspection_3_Resistance_Maximum,
+            Inspection_10_Pull_Test
+        ) VALUES (
+        %s, %s, %s, %s, %s, %s, %s)
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+
+def InsertDataToEM0580107PInspectionTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM em0580107P_inspection")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO em0580107P_inspection (
+            ID,
+            Lot_Number,
+            Date,
+            Inspection_3_Resistance_Minimum,
+            Inspection_3_Resistance_Average,
+            Inspection_3_Resistance_Maximum,
+            Inspection_4_Dimension_Minimum,
+            Inspection_4_Dimension_Average,
+            Inspection_4_Dimension_Maximum,
+            Inspection_5_Dimension_Minimum,
+            Inspection_5_Dimension_Average,
+            Inspection_5_Dimension_Maximum,
+            Inspection_10_Pull_Test
+        ) VALUES (
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s, %s)
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+
+def InsertDataToFM05000102InspectionTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM FM05000102_inspection")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO FM05000102_inspection (
+            ID,
+            Lot_Number,
+            Date,
+            Inspection_1_Minimum,
+            Inspection_1_Average,
+            Inspection_1_Maximum,
+                          
+            Inspection_2_Minimum,
+            Inspection_2_Average,
+            Inspection_2_Maximum,
+                          
+            Inspection_3_Minimum,
+            Inspection_3_Average,
+            Inspection_3_Maximum,
+                          
+            Inspection_4_Minimum,
+            Inspection_4_Average,
+            Inspection_4_Maximum,
+                          
+            Inspection_5_Minimum,
+            Inspection_5_Average,
+            Inspection_5_Maximum,
+                          
+            Inspection_6_Minimum,
+            Inspection_6_Average,
+            Inspection_6_Maximum,
+                          
+            Inspection_7_Minimum,
+            Inspection_7_Average,
+            Inspection_7_Maximum
+        ) VALUES (
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s, %s, %s)
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+
+def InsertDataToCSB6400802InspectionTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM CSB6400802_inspection")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO CSB6400802_inspection (
+            ID,
+            Lot_Number,
+            Date,
+            Inspection_1_Minimum,
+            Inspection_1_Average,
+            Inspection_1_Maximum
+        ) VALUES (
+        %s, %s, %s, %s, %s, %s
+        )
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+
+def InsertDataToDF06600600InspectionTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM DF06600600_inspection")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO DF06600600_inspection (
+            ID,
+            Lot_Number,
+            Date,
+            Inspection_1_Minimum,
+            Inspection_1_Average,
+            Inspection_1_Maximum,
+                          
+            Inspection_2_Minimum,
+            Inspection_2_Average,
+            Inspection_2_Maximum,
+                          
+            Inspection_3_Minimum,
+            Inspection_3_Average,
+            Inspection_3_Maximum,
+                          
+            Inspection_4_Minimum,
+            Inspection_4_Average,
+            Inspection_4_Maximum,
+                          
+            Inspection_6_Hardness_Test
+        ) VALUES (
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s, %s, %s, %s, %s
+        )
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+
+def InsertDataToRD05200200InspectionTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM RD05200200_inspection")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO RD05200200_inspection (
+            ID,
+            Lot_Number,
+            Date,
+            Inspection_1_Minimum,
+            Inspection_1_Average,
+            Inspection_1_Maximum,
+                          
+            Inspection_2_Minimum,
+            Inspection_2_Average,
+            Inspection_2_Maximum,
+                          
+            Inspection_3_Minimum,
+            Inspection_3_Average,
+            Inspection_3_Maximum,
+                          
+            Inspection_4_Minimum,
+            Inspection_4_Average,
+            Inspection_4_Maximum,
+                          
+            Inspection_5_Minimum,
+            Inspection_5_Average,
+            Inspection_5_Maximum,
+                          
+            Inspection_6_Minimum,
+            Inspection_6_Average,
+            Inspection_6_Maximum,
+                          
+            Inspection_8_Breaking_Test
+        ) VALUES (
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s
+        )
     """
     
     # Execute the insert only for new records
