@@ -13,7 +13,7 @@ def InsertToDataBase():
     emptyDetected = 0
     supplierFiltered = None
 
-    GuiManager.InsertInLogWindow("Started!")
+    GuiManager.InsertInLogWindow("RD05200200 STARTED!")
     GuiManager.Loading()
 
     Sql.SqlConnection()
@@ -65,7 +65,9 @@ def InsertToDataBase():
                     "Inspection_6_Average": f"{supplierFiltered.iloc[8].mean():.2f}",
                     "Inspection_6_Maximum": f"{supplierFiltered.iloc[8].max():.2f}",
 
-                    "Inspection_8_Breaking_Test": f"{supplierFiltered.iloc[10].max():.2f}"
+                    "Inspection_8_Breaking_Test_Minimum": f"{supplierFiltered.iloc[10].min():.2f}",
+                    "Inspection_8_Breaking_Test_Average": f"{supplierFiltered.iloc[10].mean():.2f}",
+                    "Inspection_8_Breaking_Test_Maximum": f"{supplierFiltered.iloc[10].max():.2f}"
                 }
 
                 dataFrame = pd.DataFrame([dataFrame])
@@ -90,9 +92,6 @@ def InsertToDataBase():
         emptyDetected = 0
 
     GuiManager.FinishedLoading()
-    GuiManager.InsertInLogWindow("Finished!")
+    GuiManager.InsertInLogWindow("RD05200200 FINISHED!")
 
-#Reading Files
-# FilesReader = filesReader()
-# FilesReader.ReadAllFiles()
 # %%

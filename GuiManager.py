@@ -15,7 +15,7 @@ def showGui():
     windll.shcore.SetProcessDpiAwareness(1)
 
     root = tk.Tk()
-    root.title('FC1 Compiler')
+    root.title('SQL Inspection Data Compiler')
     root.geometry('600x650+50+50')
     root.resizable(False, False)
 
@@ -29,6 +29,8 @@ def showGui():
 
     InstantiateProceedButton()
     InstantiateLogWindow()
+
+    
 
     root.mainloop()
 

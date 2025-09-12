@@ -13,7 +13,7 @@ def InsertToDataBase():
     emptyDetected = 0
     supplierFiltered = None
 
-    GuiManager.InsertInLogWindow("Started!")
+    GuiManager.InsertInLogWindow("FM05000102 STARTED")
     GuiManager.Loading()
 
     Sql.SqlConnection()
@@ -94,4 +94,4 @@ def InsertToDataBase():
         emptyDetected = 0
 
     GuiManager.FinishedLoading()
-    GuiManager.InsertInLogWindow("Finished!")
+    GuiManager.InsertInLogWindow("FM05000102 FINISHED")

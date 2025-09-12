@@ -13,7 +13,7 @@ def InsertToDataBase():
     emptyDetected = 0
     supplierFiltered = None
 
-    GuiManager.InsertInLogWindow("Started!")
+    GuiManager.InsertInLogWindow("CSB6400802 STARTED!")
     GuiManager.Loading()
 
     Sql.SqlConnection()
@@ -67,7 +67,7 @@ def InsertToDataBase():
         emptyDetected = 0
 
     GuiManager.FinishedLoading()
-    GuiManager.InsertInLogWindow("Finished!")
+    GuiManager.InsertInLogWindow("CSB6400802 FINISHED!")
 
 #Reading Files
 # FilesReader = filesReader()

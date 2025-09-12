@@ -600,15 +600,45 @@ class filesReader():
                                     if "outjob material monitoring checksheet" in d.lower():
                                         vt1Directory = os.path.join(vt1Directory, d)
                                         os.chdir(vt1Directory)
+                                        print(f"Updated vt1Directory: {vt1Directory}")
 
-                                        wb = load_workbook(filename='SNAP.xlsx', data_only=True)
+                                        # wb = load_workbook(filename='SNAP.xlsx', data_only=True)
 
-                                        print(f"SNAP FINDED IN {vt1Directory}")
-                                        DFBSNAPData.append(wb)
-            except:
-                pass
+                                        # print(f"SNAP FINDED IN {vt1Directory}")
+                                        # DFBSNAPData.append(wb)
 
-            if self.readingYear > 2021:
+
+
+                                        #___________________________________________________
+                                        #Finding All xlsm Files In The Current Directory
+                                    
+
+                                        files = glob.glob('*.xlsx') + glob.glob("*.xlsm")
+
+                                        # print(f"Total Files In {self.readingYear} {len(files)}")
+                                        for a in files:
+                                            print(f"FILES SEEN {a}")
+                                        
+                                        # + glob.glob("*.xlsm")
+
+                                        recentTime = 0
+
+                                        #Checking Each Files In Files;
+                                        for f in files:
+                                            if 'SNAP' in f:
+                                                #Checking If It Is Recent File
+                                                fileTime = os.path.getmtime(f)
+                                                if fileTime > recentTime:
+                                                    recentTime = fileTime
+                                                    fileName = f
+
+                                        workbook = CalamineWorkbook.from_path(fileName)
+                                        DFBSNAPData.append(workbook)
+                                        #_______________________________________________________
+            except Exception as error:
+                print(error)
+
+            if self.readingYear > 2024:
                 self.readingYear -= 1
             else:
                 # self.fileFinishedReading = True
@@ -988,16 +1018,17 @@ class filesReader():
                 break
 
     def ReadAllFiles(self):
-        # self.ReadEm2pFiles()
-        # self.ReadEm3pFiles()
-        # self.ReadFmFiles()
-        # self.ReadDfbSnapFiles()
-        # self.ReadDfbFiles()
-        # self.ReadTensile()
+        self.ReadEm2pFiles()
+        self.ReadEm3pFiles()
+        self.ReadFmFiles()
+        self.ReadDfbSnapFiles()
+        self.ReadDfbFiles()
+        self.ReadTensile()
         self.ReadRdbCheckSheetFiles()
-        # self.ReadRdbFiles()
-        # self.ReadCsbFiles()
-        # self.ReadHPIQAQCFiles()
+        self.ReadRdbFiles()
+        self.ReadCsbFiles()
+
+        pass
 
 #%%
 # filesreader = filesReader()

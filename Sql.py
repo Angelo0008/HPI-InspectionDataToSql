@@ -206,7 +206,75 @@ def CreateRD05200200Inspection():
             Inspection_6_Average VARCHAR(64),
             Inspection_6_Maximum VARCHAR(64),
                           
-            Inspection_8_Breaking_Test VARCHAR(64)
+            Inspection_8_Breaking_Test_Minimum VARCHAR(64),
+            Inspection_8_Breaking_Test_Average VARCHAR(64),
+            Inspection_8_Breaking_Test_Maximum VARCHAR(64)
+        )
+    """)
+
+def CreateRDB5200200ChecksheetTable():
+    global create_cursor
+
+    create_cursor.execute("""
+        CREATE TABLE IF NOT EXISTS RDB5200200_checksheet(
+            ID VARCHAR(64) PRIMARY KEY,
+            Prod_Date VARCHAR(64),
+            Material_Lot_Number VARCHAR(64),
+            QR_CODE VARCHAR(64),
+            PRODUCE_QTY VARCHAR(64),
+            JO_NUMBER VARCHAR(64),
+            Rod_Blk_Tesla_1_Minimum_Data VARCHAR(64),
+            Rod_Blk_Tesla_1_Average_Data VARCHAR(64),
+            Rod_Blk_Tesla_1_Max_Data VARCHAR(64),
+            Rod_Blk_Tesla_2_Minimum_Data VARCHAR(64),
+            Rod_Blk_Tesla_2_Average_Data VARCHAR(64),
+            Rod_Blk_Tesla_2_Max_Data VARCHAR(64),
+            Rod_Blk_Tesla_3_Minimum_Data VARCHAR(64),
+            Rod_Blk_Tesla_3_Average_Data VARCHAR(64),
+            Rod_Blk_Tesla_3_Max_Data VARCHAR(64),
+            Rod_Blk_Tesla_4_Minimum_Data VARCHAR(64),
+            Rod_Blk_Tesla_4_Average_Data VARCHAR(64),
+            Rod_Blk_Tesla_4_Max_Data VARCHAR(64)
+        )
+        """)
+    
+def CreateDfbSnapData():
+    global create_cursor
+
+    create_cursor.execute("""
+        CREATE TABLE dfb_snap_data(
+            ID VARCHAR(64) PRIMARY KEY,  
+            DATE VARCHAR(64),
+            ITEM_BLOCK_CODE VARCHAR(64),
+            DF_RUBBER VARCHAR(64),
+            CENTER_PLATE_A VARCHAR(64),
+            CENTER_PLATE_B VARCHAR(64),
+            DATE_AND_TIME_ANNEALED VARCHAR(64),
+            PRODUCED_QTY VARCHAR(64),
+            OPERATOR VARCHAR(64),
+            JOB_NUMBER VARCHAR(64)
+        )
+    """)
+
+def CreateDfbTensileData():
+    global create_cursor
+
+    create_cursor.execute("""
+        CREATE TABLE dfb_tensile_data(       
+            ID VARCHAR(64) PRIMARY KEY,
+            ITEM_CODE VARCHAR(64),
+            DF_LOT_NO VARCHAR(64),
+            RATE_OF_CHANGE_MIN VARCHAR(64),
+            RATE_OF_CHANGE_AVE VARCHAR(64),
+            RATE_OF_CHANGE_MAX VARCHAR(64),
+
+            START_FORCE_MIN VARCHAR(64),
+            START_FORCE_AVE VARCHAR(64),
+            START_FORCE_MAX VARCHAR(64),
+
+            TERMINATING_FORCE_MIN VARCHAR(64),
+            TERMINATING_FORCE_AVE VARCHAR(64),
+            TERMINATING_FORCE_MAX VARCHAR(64)
         )
     """)
 
@@ -1942,9 +2010,159 @@ def InsertDataToRD05200200InspectionTable(df):
             Inspection_6_Average,
             Inspection_6_Maximum,
                           
-            Inspection_8_Breaking_Test
+            Inspection_8_Breaking_Test_Minimum,
+            Inspection_8_Breaking_Test_Average,
+            Inspection_8_Breaking_Test_Maximum
         ) VALUES (
         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s, %s, %s
+        )
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+
+def InsertDataToRDB5200200ChecksheetTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM RDB5200200_checksheet")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO RDB5200200_checksheet (
+            ID,
+            Prod_Date,
+            Material_Lot_Number,
+            QR_CODE,
+            PRODUCE_QTY,
+            JO_NUMBER,
+            Rod_Blk_Tesla_1_Minimum_Data,
+            Rod_Blk_Tesla_1_Average_Data,
+            Rod_Blk_Tesla_1_Max_Data,
+            Rod_Blk_Tesla_2_Minimum_Data,
+            Rod_Blk_Tesla_2_Average_Data,
+            Rod_Blk_Tesla_2_Max_Data,
+            Rod_Blk_Tesla_3_Minimum_Data,
+            Rod_Blk_Tesla_3_Average_Data,
+            Rod_Blk_Tesla_3_Max_Data,
+            Rod_Blk_Tesla_4_Minimum_Data,
+            Rod_Blk_Tesla_4_Average_Data,
+            Rod_Blk_Tesla_4_Max_Data
+        ) VALUES (
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+        %s, %s, %s, %s, %s, %s, %s, %s
+        )
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+
+def InsertDataToDfbSnapTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM dfb_snap_data")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO dfb_snap_data (
+            ID,  
+            DATE,
+            ITEM_BLOCK_CODE,
+            DF_RUBBER,
+            CENTER_PLATE_A,
+            CENTER_PLATE_B,
+            DATE_AND_TIME_ANNEALED,
+            PRODUCED_QTY,
+            OPERATOR,
+            JOB_NUMBER
+        ) VALUES (
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        )
+    """
+    
+    # Execute the insert only for new records
+    create_cursor.executemany(insert_query, new_records)
+    mariadb_connection.commit()
+    print(f"Successfully inserted {len(new_records)} new records into process6_data table")
+
+    return len(new_records)
+def InsertDataToDfbTensileTable(df):
+    global create_cursor, mariadb_connection
+
+    # Replace NaN values with None
+    df = df.replace({np.nan: None})
+    
+    # First, get all existing datetimes from the database
+    create_cursor.execute("SELECT ID FROM dfb_tensile_data")
+    existing_datetimes = [row[0] for row in create_cursor.fetchall()]
+    
+    # Filter out records that already exist in the database
+    new_records = []
+    for record in df.values.tolist():
+        if str(record[0]) not in str(existing_datetimes):  # Process_1_DateTime is at index 1
+            new_records.append(record)
+    
+    if not new_records:
+        print("No new records to insert")
+        return
+    
+    # Create the SQL insert statement
+    insert_query = """
+        INSERT INTO dfb_tensile_data (
+            ID,
+            ITEM_CODE,
+            DF_LOT_NO,
+            RATE_OF_CHANGE_MIN,
+            RATE_OF_CHANGE_AVE,
+            RATE_OF_CHANGE_MAX,
+
+            START_FORCE_MIN,
+            START_FORCE_AVE,
+            START_FORCE_MAX,
+
+            TERMINATING_FORCE_MIN,
+            TERMINATING_FORCE_AVE,
+            TERMINATING_FORCE_MAX
+        ) VALUES (
         %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
         %s, %s
         )

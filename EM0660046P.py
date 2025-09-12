@@ -13,7 +13,7 @@ def InsertToDataBase():
     emptyDetected = 0
     supplierFiltered = None
 
-    GuiManager.InsertInLogWindow("Started!")
+    GuiManager.InsertInLogWindow("EM0660046P STARTED!")
     GuiManager.Loading()
 
     Sql.SqlConnection()
@@ -71,7 +71,7 @@ def InsertToDataBase():
         emptyDetected = 0
 
     GuiManager.FinishedLoading()
-    GuiManager.InsertInLogWindow("Finished!")
+    GuiManager.InsertInLogWindow("EM0660046P FINISHED!")
 
 # Reading Files
 # FilesReader = filesReader()

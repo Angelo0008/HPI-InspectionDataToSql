@@ -26,3 +26,7 @@ def GetTimeNow():
 
     timeNow = datetime.datetime.today()
     timeNow = timeNow.strftime('%H:%M')
+
+def GetCurrentDateTime():
+    """Returns current date and time in format YYYY-MM-DD HH:MM:SS"""
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
