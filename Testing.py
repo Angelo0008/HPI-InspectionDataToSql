@@ -22,25 +22,25 @@ from FilesReader import *
 # em0660046PDataManager.InsertToDatabase()
 
 
-# FilesReader = filesReader()
-# FilesReader.ReadAllFiles()
+FilesReader = filesReader()
+FilesReader.ReadAllFiles()
 
-DFBSNAPData = []
+# DFBSNAPData = []
 
-vt1Directory = (fr'\\192.168.2.19\production\2025\2. Online Checksheet\Outjob\OUTJOB MATERIAL MONITORING CHECKSHEET')
-os.chdir(vt1Directory)
+# vt1Directory = (fr'\\192.168.2.19\production\2025\2. Online Checksheet\Outjob\OUTJOB MATERIAL MONITORING CHECKSHEET')
+# os.chdir(vt1Directory)
 
-files = glob.glob('*.xlsx') + glob.glob('*.xlsm')
-files2 = []
-for a in files:
-    if '$' not in a:
-        files2.append(a)
+# files = glob.glob('*.xlsx') + glob.glob('*.xlsm')
+# files2 = []
+# for a in files:
+#     if '$' not in a:
+#         files2.append(a)
 
-#Checking Each Files In Files;
-for f in files2:
-    if 'SNAP' in f:
-        workbook = CalamineWorkbook.from_path(f)
-        DFBSNAPData.append(workbook)
+# #Checking Each Files In Files;
+# for f in files2:
+#     if 'SNAP' in f:
+#         workbook = CalamineWorkbook.from_path(f)
+#         DFBSNAPData.append(workbook)
 
 
 

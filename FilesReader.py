@@ -612,28 +612,17 @@ class filesReader():
                                         #___________________________________________________
                                         #Finding All xlsm Files In The Current Directory
                                     
-
-                                        files = glob.glob('*.xlsx') + glob.glob("*.xlsm")
-
-                                        # print(f"Total Files In {self.readingYear} {len(files)}")
+                                        files = glob.glob('*.xlsx') + glob.glob('*.xlsm')
+                                        files2 = []
                                         for a in files:
-                                            print(f"FILES SEEN {a}")
-                                        
-                                        # + glob.glob("*.xlsm")
-
-                                        recentTime = 0
+                                            if '$' not in a:
+                                                files2.append(a)
 
                                         #Checking Each Files In Files;
-                                        for f in files:
+                                        for f in files2:
                                             if 'SNAP' in f:
-                                                #Checking If It Is Recent File
-                                                fileTime = os.path.getmtime(f)
-                                                if fileTime > recentTime:
-                                                    recentTime = fileTime
-                                                    fileName = f
-
-                                        workbook = CalamineWorkbook.from_path(fileName)
-                                        DFBSNAPData.append(workbook)
+                                                workbook = CalamineWorkbook.from_path(f)
+                                                DFBSNAPData.append(workbook)
                                         #_______________________________________________________
             except Exception as error:
                 print(error)
@@ -801,7 +790,7 @@ class filesReader():
             except:
                 pass
 
-            if self.readingYear > 2024:
+            if self.readingYear > 2025:
                 self.readingYear -= 1
             else:
                 # self.fileFinishedReading = True

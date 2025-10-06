@@ -21,7 +21,31 @@ def InsertToDataBase():
 
     for file in RDB5200200CheckSheet:
         for s in file.sheet_names:
-            firstRow = 7
+            firstRow = 8
+
+
+
+
+            # if "september" in s.lower():
+            #     print(s)
+            #     RDB5200200Data = file.get_sheet_by_name(s).to_python(skip_empty_area=True)
+            #     RDB5200200Data = pd.DataFrame(RDB5200200Data)
+            #     RDB5200200Data = RDB5200200Data.replace(r'\s+', '', regex=True)
+
+            
+            #     pd.set_option('display.max_columns', None)
+            #     pd.set_option('display.max_rows', None)
+
+            #     filterData = RDB5200200Data.iloc[4:, 0:13]
+
+            #     return filterData
+
+
+
+
+
+
+
 
             if "mastercopy" not in s.lower():
                 print(s)
@@ -32,12 +56,17 @@ def InsertToDataBase():
                 pd.set_option('display.max_columns', None)
                 pd.set_option('display.max_rows', None)
 
-                filterData = RDB5200200Data.iloc[4:, 0:13]
+                filterData = RDB5200200Data.iloc[8:, 0:13]
+
+                # return filterData
 
                 while True:
                     try:
                         print(firstRow)
                         perRowFilteredData = filterData.loc[[firstRow]]
+
+                        # return perRowFilteredData
+
                         perRowFilteredData.columns = [
                             "Prod_Date",
                             "1",
@@ -53,6 +82,8 @@ def InsertToDataBase():
                             "PRODUCE_QTY",
                             "JO_NUMBER"
                         ]
+
+                        # return perRowFilteredData
                         
                         #Getting The Row, Column Location Of Lot Number
                         findLotNumber = [(index, column) for index, row in RDB5200200Data.iterrows() for column, value in row.items() if str(value) == str(perRowFilteredData["Prod_Date"].values[0])]
@@ -60,7 +91,10 @@ def InsertToDataBase():
                         lotNumberColumn = [column for _, column in findLotNumber]
 
                         #Getting The Tesla Table
-                        inspectionData = RDB5200200Data.iloc[max(0, lotNumberRow[0]):min(len(RDB5200200Data), lotNumberRow[0] + 7), RDB5200200Data.columns.get_loc(lotNumberColumn[0] + 21):RDB5200200Data.columns.get_loc(lotNumberColumn[0]) + 26]
+                        # inspectionData = RDB5200200Data.iloc[max(0, lotNumberRow[0]):min(len(RDB5200200Data), lotNumberRow[0] + 7), RDB5200200Data.columns.get_loc(lotNumberColumn[0] + 21):RDB5200200Data.columns.get_loc(lotNumberColumn[0]) + 26]
+                        inspectionData = RDB5200200Data.iloc[max(0, lotNumberRow[0]):min(len(RDB5200200Data), lotNumberRow[0] + 8), RDB5200200Data.columns.get_loc(lotNumberColumn[0] + 15):RDB5200200Data.columns.get_loc(lotNumberColumn[0]) + 20]
+
+                        # return inspectionData
 
                         perRowFilteredData["Rod_Blk_Tesla_1_Minimum_Data"] = inspectionData.iloc[0].min()
                         perRowFilteredData["Rod_Blk_Tesla_1_Average_Data"] = inspectionData.iloc[0].mean()
@@ -125,4 +159,5 @@ def InsertToDataBase():
 # Reading Files
 # FilesReader = filesReader()
 # FilesReader.ReadAllFiles()
+# InsertToDataBase()
 #%%
